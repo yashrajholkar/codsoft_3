@@ -1,0 +1,114 @@
+package codsoft;
+
+import java.util.List;
+import java.util.Scanner;
+
+public class AddressBookSystem {
+    private AddressBook addressBook;
+    private Scanner scanner;
+
+    public AddressBookSystem() {
+        addressBook = new AddressBook();
+        scanner = new Scanner(System.in);
+    }
+
+    public void start() {
+        boolean running = true;
+        while (running) {
+            System.out.println("Address Book System");
+            System.out.println("1. Add Contact");
+            System.out.println("2. Remove Contact");
+            System.out.println("3. Search Contact");
+            System.out.println("4. Display All Contacts");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+
+            switch (choice) {
+                case 1:
+                    addContact();
+                    break;
+                case 2:
+                    removeContact();
+                    break;
+                case 3:
+                    searchContact();
+                    break;
+                case 4:
+                    displayContacts();
+                    break;
+                case 5:
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private void addContact() {
+        System.out.print("Enter contact name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter contact phone number: ");
+        String phoneNumber = scanner.nextLine();
+        System.out.print("Enter contact email address: ");
+        String emailAddress = scanner.nextLine();
+
+        Contact contact = new Contact(name, phoneNumber, emailAddress);
+        addressBook.addContact(contact);
+        System.out.println("Contact added successfully.");
+    }
+
+    private void removeContact() {
+        System.out.print("Enter the name of the contact to remove: ");
+        String name = scanner.nextLine();
+
+        List<Contact> searchResults = addressBook.searchContacts(name);
+        if (searchResults.isEmpty()) {
+            System.out.println("Contact not found.");
+        } else if (searchResults.size() == 1) {
+            Contact contact = searchResults.get(0);
+            addressBook.removeContact(contact);
+            System.out.println("Contact removed successfully.");
+        } else {
+            System.out.println("Multiple contacts found. Please provide more specific information.");
+        }
+    }
+
+    private void searchContact() {
+        System.out.print("Enter the search keyword: ");
+        String keyword = scanner.nextLine();
+
+        List<Contact> searchResults = addressBook.searchContacts(keyword);
+        if (searchResults.isEmpty()) {
+            System.out.println("No matching contacts found.");
+        } else {
+            System.out.println("Search results:");
+            for (Contact contact : searchResults) {
+                System.out.println(contact.getName() + " | " +
+                        contact.getPhoneNumber() + " | " +
+                        contact.getEmailAddress());
+            }
+        }
+    }
+
+    private void displayContacts() {
+        List<Contact> contacts = addressBook.getAllContacts();
+        if (contacts.isEmpty()) {
+            System.out.println("No contacts found.");
+        } else {
+            System.out.println("All contacts:");
+            for (Contact contact : contacts) {
+                System.out.println(contact.getName() + " | " +
+                        contact.getPhoneNumber() + " | " +
+                        contact.getEmailAddress());
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        AddressBookSystem addressBookSystem = new AddressBookSystem();
+        addressBookSystem.start();
+    }
+}
